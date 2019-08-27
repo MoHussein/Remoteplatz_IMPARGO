@@ -1,6 +1,6 @@
 /* global fetch, L */
 import React, { useEffect, useRef, useState } from 'react'
-import Moment from 'moment'
+  import Moment from 'moment'
 
 const getRouteSummary = (locations) => {
   const to = Moment(locations[0].time).format('hh:mm DD.MM')
@@ -8,18 +8,31 @@ const getRouteSummary = (locations) => {
   return `${from} - ${to}`
 }
 
-const MapComponent = () => {
+const MapComponent = (props) => {
+
   const map = useRef()
   const [locations, setLocations] = useState()
+  const [closestLocation, setClosestLocation] = useState()
+
   // Request location data.
   useEffect(() => {
     fetch('http://localhost:3000')
       .then(response => response.json())
       .then((json) => {
-        setLocations(json)
+              setLocations(json);
       })
   }, [])
+
+
+
   // TODO(Task 2): Request location closest to specified datetime from the back-end.
+  useEffect(() => {
+      fetch('http://localhost:3000/location/'+props.time)
+          .then(response => response.json())
+          .then((json) => {
+              setClosestLocation(json);
+          })
+  }, [props.time])
 
   // Initialize map.
   useEffect(() => {
@@ -59,11 +72,17 @@ const MapComponent = () => {
       }
 
   }, [locations, map.current])
-  // TODO(Task 2): Display location that the back-end returned on the map as a marker.
 
+  // TODO(Task 2): Display location that the back-end returned on the map as a marker.
+    useEffect(() => {
+        if (!closestLocation) {
+            return
+        }
+       L.marker([closestLocation["lat"] , closestLocation["lon"]]).addTo(map.current);
+    }, [closestLocation])
   return (
     <div>
-      {locations && `${locations.length} locations loaded`}
+      {locations && `${locations.length} trips loaded`}
       {!locations && 'Loading...'}
       <div id='mapid' />
     </div>)
