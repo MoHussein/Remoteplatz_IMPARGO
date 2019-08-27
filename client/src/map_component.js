@@ -40,10 +40,24 @@ const MapComponent = () => {
       return // If map or locations not loaded yet.
     }
     // TODO(Task 1): Replace the single red polyline by the different segments on the map.
-    const latlons = locations.map(({ lat, lon }) => [lat, lon])
-    const polyline = L.polyline(latlons, { color: 'red' }).bindPopup(getRouteSummary(locations)).addTo(map.current)
-    map.current.fitBounds(polyline.getBounds())
-    return () => map.current.remove(polyline)
+      var colorArray = ['#ff0702', '#FFB399', '#00FF00', '#FF0CAB', '#0364e6',
+          '#FFF43D', '#000000', '#E0E900', '#99FF99', '#B34D4D',
+          '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
+          '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+          '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
+          '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
+          '#E666B3', '#33991A', '#0364E6', '#B3B31A', '#00E680',
+          '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+          '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
+          '#0080a0', '#4DB380', '#FF4D4D', '#0080A0', '#6666FF'];
+
+      for (var i = 0; i < locations.length; i++) {
+          const latlons = locations[i].map(({ lat, lon }) => [lat, lon])
+          const polyline = L.polyline(latlons, { color: colorArray[i] }).bindPopup(getRouteSummary(locations[i])).addTo(map.current)
+          map.current.fitBounds(polyline.getBounds())
+
+      }
+
   }, [locations, map.current])
   // TODO(Task 2): Display location that the back-end returned on the map as a marker.
 
